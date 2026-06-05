@@ -1,0 +1,505 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: linear-gradient(135deg, #0f5c6b 0%, #1a3a3a 100%);
+    font-family: 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, sans-serif;
+    padding: 16px;
+    min-height: 100vh;
+}
+
+/* Dashboard principal */
+.dashboard {
+    max-width: 1600px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+/* Sidebar mejorada - Celeste esmeralda */
+.sidebar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1), 0 4px 12px rgba(0,0,0,0.05);
+    overflow: hidden;
+    position: sticky;
+    top: 16px;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(46, 204, 113, 0.3);
+}
+
+.sidebar-header {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: white;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.sidebar-header h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.sidebar-header p {
+    font-size: 0.7rem;
+    opacity: 0.95;
+    margin-top: 6px;
+}
+
+/* Navegación mejorada */
+.nav-container {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.nav-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.nav-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.nav-container::-webkit-scrollbar-thumb {
+    background: #e74c3c;
+    border-radius: 10px;
+}
+
+.facultad-item, .carrera-item, .nav-item {
+    padding: 14px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 4px 8px;
+    border-radius: 12px;
+    background: white;
+    border-left: 4px solid #1abc9c;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.facultad-item:hover, .carrera-item:hover, .nav-item:hover {
+    background: linear-gradient(135deg, #e8f8f5 0%, #d1f2eb 100%);
+    transform: translateX(4px);
+    border-left-color: #e74c3c;
+}
+
+.facultad-item.active, .carrera-item.active, .nav-item.active {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: white;
+    border-left-color: #e74c3c;
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(26, 188, 156, 0.3);
+}
+
+.nav-title {
+    padding: 16px 20px 8px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: #e74c3c;
+    letter-spacing: 1.5px;
+}
+
+/* Botones de navegación */
+.back-button {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    margin: 8px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: calc(100% - 16px);
+}
+
+.back-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+}
+
+/* Panel de horarios */
+.schedule-panel {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 1.5rem;
+    overflow-x: auto;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    border: 1px solid rgba(26, 188, 156, 0.3);
+}
+
+.schedule-header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 3px solid #1abc9c;
+}
+
+.schedule-header h3 {
+    font-size: 1.5rem;
+    background: linear-gradient(135deg, #1abc9c 0%, #e74c3c 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+}
+
+.schedule-header p {
+    color: #e74c3c;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Tabla de horarios - ARREGLADA PARA QUE SE VEA COMPLETA */
+.horario-wrapper {
+    overflow-x: auto;
+    border-radius: 16px;
+    background: white;
+}
+
+.horario-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    min-width: 800px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.horario-table caption {
+    text-align: left;
+    padding: 12px;
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: white;
+    font-weight: bold;
+    border-radius: 12px 12px 0 0;
+    font-size: 0.9rem;
+}
+
+.horario-table th {
+    background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%);
+    color: white;
+    font-weight: 700;
+    padding: 14px 8px;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid #16a085;
+}
+
+.horario-table td {
+    border: 1px solid #d5f5e3;
+    padding: 10px 6px;
+    text-align: center;
+    vertical-align: middle;
+    background: white;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.horario-table tr:hover td {
+    background: #fef9e7;
+    transform: scale(1.01);
+}
+
+/* Clases en el horario */
+.clase-cell {
+    background: linear-gradient(135deg, #e8f8f5 0%, #d1f2eb 100%);
+    border-radius: 12px;
+    padding: 10px 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #c0392b;
+    box-shadow: 0 2px 6px rgba(231, 76, 60, 0.2);
+    border-left: 3px solid #e74c3c;
+    transition: all 0.3s ease;
+}
+
+.clase-cell:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+.materia-nombre {
+    font-weight: 800;
+    color: #1abc9c;
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.8rem;
+}
+
+.badge-aula {
+    font-size: 0.65rem;
+    color: #e74c3c;
+    display: block;
+    margin-top: 4px;
+    font-weight: 600;
+    background: rgba(231, 76, 60, 0.1);
+    padding: 2px 6px;
+    border-radius: 12px;
+    display: inline-block;
+}
+
+.horario-vacio {
+    color: #bdc3c7;
+    font-size: 0.7rem;
+    font-style: italic;
+}
+
+.empty-message, .loading {
+    text-align: center;
+    padding: 60px 20px;
+    color: #7f8c8d;
+    font-size: 1rem;
+    background: white;
+    border-radius: 16px;
+}
+
+.loading {
+    background: linear-gradient(135deg, #e8f8f5 0%, #d1f2eb 100%);
+    border-radius: 16px;
+    animation: pulse 1.5s ease-in-out infinite;
+    color: #1abc9c;
+    font-weight: 600;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.98); }
+}
+
+footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 0.7rem;
+    color: #95a5a6;
+    padding-top: 20px;
+    border-top: 2px solid #d5f5e3;
+}
+
+/* Información del docente */
+.docente-info {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    padding: 12px 16px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.docente-info h4 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.docente-info span {
+    background: rgba(255,255,255,0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+
+/* ========== DISEÑO RESPONSIVE ========== */
+
+/* Tablets */
+@media (max-width: 1024px) {
+    .dashboard {
+        gap: 16px;
+    }
+    
+    .horario-table {
+        font-size: 0.7rem;
+        min-width: 700px;
+    }
+}
+
+/* Celulares */
+@media (max-width: 768px) {
+    body {
+        padding: 12px;
+    }
+    
+    .dashboard {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .sidebar {
+        position: static;
+        width: 100%;
+    }
+    
+    .sidebar-header {
+        padding: 1rem;
+    }
+    
+    .sidebar-header h2 {
+        font-size: 1.1rem;
+    }
+    
+    .nav-container {
+        max-height: 40vh;
+    }
+    
+    .facultad-item, .carrera-item, .nav-item {
+        padding: 10px 14px;
+        font-size: 0.85rem;
+    }
+    
+    .schedule-panel {
+        padding: 1rem;
+    }
+    
+    .schedule-header h3 {
+        font-size: 1.2rem;
+    }
+    
+    .horario-table {
+        font-size: 0.65rem;
+        min-width: 600px;
+    }
+    
+    .horario-table th {
+        padding: 10px 4px;
+        font-size: 0.7rem;
+    }
+    
+    .horario-table td {
+        padding: 8px 3px;
+    }
+    
+    .clase-cell {
+        padding: 6px 3px;
+        font-size: 0.6rem;
+    }
+    
+    .materia-nombre {
+        font-size: 0.7rem;
+    }
+    
+    .badge-aula {
+        font-size: 0.55rem;
+    }
+    
+    .docente-info {
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+}
+
+/* Celulares pequeños */
+@media (max-width: 480px) {
+    body {
+        padding: 8px;
+    }
+    
+    .sidebar-header h2 {
+        font-size: 0.95rem;
+    }
+    
+    .facultad-item, .carrera-item, .nav-item {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+    }
+    
+    .schedule-panel {
+        padding: 0.75rem;
+    }
+    
+    .horario-table {
+        font-size: 0.55rem;
+        min-width: 500px;
+    }
+    
+    .horario-table th {
+        padding: 6px 2px;
+        font-size: 0.6rem;
+    }
+    
+    .clase-cell {
+        padding: 4px 2px;
+    }
+    
+    .materia-nombre {
+        font-size: 0.6rem;
+    }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(135deg, #0a2e2e 0%, #0f1a1a 100%);
+    }
+    
+    .sidebar, .schedule-panel {
+        background: rgba(31, 41, 55, 0.95);
+    }
+    
+    .facultad-item, .carrera-item, .nav-item {
+        background: #374151;
+        color: #f3f4f6;
+        border-left-color: #1abc9c;
+    }
+    
+    .facultad-item:hover, .carrera-item:hover, .nav-item:hover {
+        background: #4b5563;
+    }
+    
+    .horario-table td {
+        background: #374151;
+        border-color: #4b5563;
+        color: #f3f4f6;
+    }
+    
+    .clase-cell {
+        background: linear-gradient(135deg, #1a472a 0%, #0d2b1a 100%);
+        color: #e74c3c;
+    }
+    
+    .horario-vacio {
+        color: #6b7280;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sidebar, .schedule-panel {
+    animation: fadeIn 0.4s ease-out;
+}
+
+/* Mejoras táctiles */
+@media (max-width: 768px) {
+    .facultad-item, .carrera-item, .nav-item, .back-button {
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .facultad-item:active, .carrera-item:active {
+        transform: scale(0.97);
+    }
+}
