@@ -2,29 +2,27 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UMSS Horarios - Sistema por Carreras Independientes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Gestión de Horarios Universitarios</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<div class="dashboard">
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <h2>📚 UMSS · Facultades</h2>
-            <p>Cada carrera tiene su propio archivo</p>
-        </div>
-        <div id="nav-container" class="nav-container">
-            <div class="loading">Cargando facultades...</div>
-        </div>
-        <div id="breadcrumb-buttons" style="padding: 12px; border-top: 1px solid #e9ecef;"></div>
+<div class="app-container">
+    <div class="nav-panel">
+        <div id="nav-container">Cargando...</div>
     </div>
     <div class="schedule-panel">
-        <div class="schedule-header">
-            <h3 id="schedule-title">📅 Horario Semanal</h3>
-            <p id="schedule-subtitle">Selecciona facultad → carrera → nivel → materia → docente</p>
+        <div class="breadcrumb-buttons" id="breadcrumb-buttons"></div>
+        <div class="selections-area" id="selections-area">
+            <div class="selections-title">
+                📌 Materias/Docentes Seleccionados
+                <button class="clear-all-btn" id="clear-all-selections">🗑️ Limpiar todo</button>
+            </div>
+            <div id="selections-list" class="selections-list">Ninguna materia seleccionada aún.</div>
         </div>
-        <div id="horario-wrapper"><div class="empty-message">⬅️ Elige una facultad para comenzar</div></div>
-        <footer>📁 Las carreras están en carpetas independientes: /facultades/[facultad]/[carrera]/carrera.js</footer>
+        <h3 id="schedule-title">📅 Horario Combinado</h3>
+        <p id="schedule-subtitle" style="color: #555;">Visualiza todas tus materias seleccionadas</p>
+        <div id="horario-wrapper" class="horario-wrapper"></div>
     </div>
 </div>
 
