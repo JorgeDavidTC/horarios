@@ -2,26 +2,76 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    user-select: none;
 }
 
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #e8f4f8 0%, #fce4e4 100%);
-    padding: 20px;
+    padding: 12px;
     min-height: 100vh;
+    position: relative;
+}
+
+/* Botón flotante FAB para menú móvil */
+.menu-fab {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00695c, #00897b);
+    border: none;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0, 105, 92, 0.4);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-fab:hover {
+    transform: scale(1.05);
+    background: linear-gradient(135deg, #ef5350, #e53935);
+}
+
+.menu-fab .menu-icon {
+    display: inline-block;
+    line-height: 1;
+}
+
+/* Overlay para cerrar menú */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
 }
 
 /* Contenedor principal */
 .app-container {
     display: flex;
-    gap: 24px;
+    gap: 20px;
     max-width: 1600px;
     margin: 0 auto;
-    flex-wrap: wrap;
+    position: relative;
 }
 
-/* Panel izquierdo - versión mejorada */
+/* Panel izquierdo de navegación */
 .nav-panel {
     flex: 1.2;
     min-width: 280px;
@@ -35,8 +85,44 @@ body {
     max-height: calc(100vh - 40px);
     position: sticky;
     top: 20px;
-    backdrop-filter: blur(2px);
     border: 1px solid rgba(46, 125, 118, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.nav-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #00695c 0%, #00897b 100%);
+    padding: 16px 20px;
+}
+
+.nav-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: white;
+    margin: 0;
+    letter-spacing: -0.3px;
+}
+
+.close-nav-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: none;
+    transition: all 0.2s ease;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-nav-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.05);
 }
 
 #nav-container {
@@ -45,17 +131,7 @@ body {
     padding: 16px;
 }
 
-.nav-title {
-    font-size: 1.25rem;
-    font-weight: bold;
-    padding: 16px 20px;
-    background: linear-gradient(135deg, #00695c 0%, #00897b 100%);
-    color: white;
-    margin: -16px -16px 16px -16px;
-    border-radius: 0 0 24px 24px;
-    letter-spacing: -0.3px;
-}
-
+/* Estilos de items de navegación */
 .facultad-item, .carrera-item, .nav-item {
     padding: 14px 18px;
     margin: 6px 0;
@@ -66,8 +142,6 @@ body {
     font-weight: 500;
     border-left: 4px solid #26a69a;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    position: relative;
-    overflow: hidden;
 }
 
 .facultad-item:hover, .carrera-item:hover, .nav-item:hover {
@@ -77,7 +151,7 @@ body {
     box-shadow: 0 4px 12px rgba(239, 83, 80, 0.15);
 }
 
-/* Panel derecho mejorado */
+/* Panel derecho - horario */
 .schedule-panel {
     flex: 3;
     min-width: 0;
@@ -85,7 +159,7 @@ body {
     backdrop-filter: blur(10px);
     border-radius: 28px;
     box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.2);
-    padding: 28px;
+    padding: 20px;
     border: 1px solid rgba(38, 166, 154, 0.2);
 }
 
@@ -93,9 +167,9 @@ body {
 .breadcrumb-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 24px;
-    padding-bottom: 16px;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
     border-bottom: 2px solid #e0f2f1;
 }
 
@@ -103,11 +177,11 @@ body {
     background: linear-gradient(135deg, #26a69a 0%, #00897b 100%);
     border: none;
     color: white;
-    padding: 10px 24px;
+    padding: 8px 16px;
     border-radius: 50px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     transition: all 0.25s ease;
     box-shadow: 0 2px 6px rgba(38, 166, 154, 0.3);
 }
@@ -115,78 +189,66 @@ body {
 .back-button:hover {
     background: linear-gradient(135deg, #ef5350 0%, #e53935 100%);
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(239, 83, 80, 0.35);
 }
 
 /* Área de selecciones */
 .selections-area {
     background: linear-gradient(135deg, #fef9f9 0%, #fff5f5 100%);
     border-radius: 20px;
-    padding: 20px;
-    margin-bottom: 28px;
+    padding: 14px;
+    margin-bottom: 20px;
     border: 1px solid #ffcdd2;
-    box-shadow: 0 6px 14px rgba(239, 83, 80, 0.08);
 }
 
 .selections-title {
     font-weight: bold;
-    margin-bottom: 16px;
-    font-size: 1.15rem;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
     background: linear-gradient(135deg, #00695c, #00897b);
     background-clip: text;
     -webkit-background-clip: text;
     color: transparent;
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: space-between;
     flex-wrap: wrap;
+    gap: 8px;
 }
 
 .clear-all-btn {
     background: linear-gradient(135deg, #ef5350, #c62828);
     color: white;
     border: none;
-    padding: 6px 16px;
+    padding: 4px 12px;
     border-radius: 30px;
     cursor: pointer;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: bold;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(198, 40, 40, 0.3);
 }
 
 .clear-all-btn:hover {
-    transform: scale(1.03);
+    transform: scale(1.02);
     background: linear-gradient(135deg, #f44336, #b71c1c);
-    box-shadow: 0 4px 12px rgba(198, 40, 40, 0.5);
 }
 
 .selections-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    max-height: 200px;
+    gap: 8px;
+    max-height: 150px;
     overflow-y: auto;
-    padding: 4px;
 }
 
 .selection-badge {
     background: white;
-    border-radius: 16px;
-    padding: 10px 18px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    padding: 6px 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
     display: flex;
     align-items: center;
-    gap: 12px;
-    border-left: 5px solid #26a69a;
-    transition: all 0.2s ease;
-    font-size: 0.9rem;
-}
-
-.selection-badge:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.12);
-    border-left-color: #ef5350;
+    gap: 8px;
+    border-left: 4px solid #26a69a;
+    font-size: 0.75rem;
 }
 
 .remove-selection {
@@ -194,130 +256,182 @@ body {
     color: white;
     border: none;
     border-radius: 50%;
-    width: 26px;
-    height: 26px;
+    width: 22px;
+    height: 22px;
     cursor: pointer;
-    font-weight: bold;
-    font-size: 16px;
+    font-size: 12px;
     line-height: 1;
     transition: all 0.2s ease;
 }
 
 .remove-selection:hover {
     transform: scale(1.1);
-    background: linear-gradient(135deg, #ff5252, #d32f2f);
 }
 
-/* Horario table */
-.horario-wrapper {
+/* Header del horario */
+.schedule-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+#schedule-title {
+    font-size: 1.1rem;
+    color: #1a3a5f;
+}
+
+.schedule-count {
+    background: linear-gradient(135deg, #26a69a, #00897b);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+/* Contenedor del horario con scroll horizontal mejorado */
+.horario-container {
     overflow-x: auto;
-    margin-top: 20px;
+    overflow-y: visible;
+    margin: 16px 0;
     border-radius: 20px;
     background: white;
-    padding: 4px;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+.horario-wrapper {
+    min-width: 100%;
+    display: inline-block;
 }
 
 .horario-table {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    font-size: 0.8rem;
-    min-width: 800px;
+    font-size: 0.7rem;
+    min-width: 700px;
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.horario-table th, .horario-table td {
+.horario-table th,
+.horario-table td {
     border: none;
-    padding: 12px 6px;
+    padding: 8px 4px;
     text-align: center;
     vertical-align: middle;
     border-bottom: 1px solid #e0e0e0;
+    border-right: 1px solid #f0f0f0;
 }
 
 .horario-table th {
     background: linear-gradient(135deg, #00695c 0%, #00897b 100%);
     color: white;
     font-weight: 600;
-    font-size: 0.85rem;
-    padding: 14px 6px;
+    font-size: 0.7rem;
+    padding: 10px 4px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-.horario-table tr:hover td {
-    background-color: #fff5f5;
+.horario-table th:first-child {
+    position: sticky;
+    left: 0;
+    background: linear-gradient(135deg, #00695c 0%, #00897b 100%);
+    z-index: 11;
+}
+
+.horario-table td:first-child {
+    position: sticky;
+    left: 0;
+    background: white;
+    font-weight: 600;
+    color: #00695c;
+    z-index: 5;
+    border-right: 2px solid #26a69a;
 }
 
 .clase-cell {
     background: linear-gradient(105deg, #e8f5e9, #c8e6e9);
-    padding: 8px;
-    border-radius: 12px;
-    font-size: 0.7rem;
-    margin: 3px;
+    padding: 6px;
+    border-radius: 10px;
+    font-size: 0.6rem;
+    margin: 2px;
     word-break: break-word;
     transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .clase-cell.conflict-cell {
     background: linear-gradient(105deg, #ffebee, #ffcdd2);
     border: 2px solid #ef5350;
-    box-shadow: 0 0 0 2px #ff8a80;
-    position: relative;
-    animation: pulseWarning 1.5s infinite;
-}
-
-@keyframes pulseWarning {
-    0%, 100% {
-        box-shadow: 0 0 0 2px #ff8a80;
-    }
-    50% {
-        box-shadow: 0 0 0 4px #ef5350;
-    }
+    box-shadow: 0 0 0 1px #ff8a80;
 }
 
 .badge-aula {
     display: inline-block;
     background: linear-gradient(135deg, #26a69a, #00897b);
     color: white;
-    border-radius: 20px;
-    padding: 3px 8px;
-    font-size: 0.65rem;
-    margin-top: 6px;
+    border-radius: 12px;
+    padding: 2px 6px;
+    font-size: 0.55rem;
+    margin-top: 4px;
     font-weight: 600;
-}
-
-.empty-message {
-    text-align: center;
-    padding: 60px 20px;
-    color: #90a4ae;
-    font-size: 1.1rem;
-    background: #fafafa;
-    border-radius: 20px;
 }
 
 .conflict-warning {
     background: linear-gradient(135deg, #ef5350, #c62828);
     color: white;
-    padding: 8px 16px;
-    border-radius: 30px;
-    font-size: 0.7rem;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 0.6rem;
     font-weight: bold;
     display: inline-block;
-    animation: fadeInOut 2s ease;
+    margin-top: 4px;
 }
 
-@keyframes fadeInOut {
-    0% { opacity: 0; transform: scale(0.8); }
-    20% { opacity: 1; transform: scale(1); }
-    80% { opacity: 1; transform: scale(1); }
-    100% { opacity: 0; transform: scale(0.8); }
+/* Leyenda */
+.legend {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.7rem;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+}
+
+.legend-normal {
+    background: linear-gradient(105deg, #e8f5e9, #c8e6e9);
+    border: 1px solid #26a69a;
+}
+
+.legend-conflict {
+    background: linear-gradient(105deg, #ffebee, #ffcdd2);
+    border: 2px solid #ef5350;
 }
 
 /* Scrollbar personalizado */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -330,91 +444,153 @@ body {
     border-radius: 10px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #00897b, #c62828);
+/* Botón agregar docente */
+.add-teacher-btn {
+    background: linear-gradient(135deg, #28a745, #1e7e34);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.7rem;
+    transition: all 0.2s ease;
 }
 
-/* Responsive Design */
+.add-teacher-btn:hover {
+    transform: scale(1.02);
+    background: linear-gradient(135deg, #34ce57, #28a745);
+}
+
+/* Mensaje vacío */
+.empty-message {
+    text-align: center;
+    padding: 40px 20px;
+    color: #90a4ae;
+    font-size: 0.9rem;
+    background: #fafafa;
+    border-radius: 20px;
+}
+
+/* ========== RESPONSIVE ========== */
+
+/* Tablets y móviles grandes */
 @media (max-width: 768px) {
     body {
-        padding: 12px;
+        padding: 8px;
     }
     
-    .app-container {
-        gap: 16px;
+    .menu-fab {
+        display: flex;
     }
     
     .nav-panel {
-        min-width: 250px;
-        max-height: 400px;
-        position: relative;
+        position: fixed;
         top: 0;
+        left: 0;
+        width: 85%;
+        max-width: 320px;
+        height: 100vh;
+        max-height: 100vh;
+        z-index: 999;
+        transform: translateX(-100%);
+        border-radius: 0 24px 24px 0;
+        margin: 0;
+        top: 0;
+        bottom: 0;
+        transition: transform 0.3s ease;
+    }
+    
+    .nav-panel.open {
+        transform: translateX(0);
+    }
+    
+    .close-nav-btn {
+        display: flex;
     }
     
     .schedule-panel {
-        padding: 16px;
+        width: 100%;
+        padding: 12px;
     }
     
-    .selection-badge {
-        font-size: 0.8rem;
-        padding: 6px 12px;
+    .horario-container {
+        margin: 12px 0;
     }
     
-    .horario-table th, .horario-table td {
-        padding: 8px 3px;
-        font-size: 0.7rem;
+    .horario-table {
+        min-width: 550px;
+        font-size: 0.6rem;
+    }
+    
+    .horario-table th,
+    .horario-table td {
+        padding: 6px 2px;
     }
     
     .clase-cell {
-        font-size: 0.6rem;
+        font-size: 0.55rem;
         padding: 4px;
     }
     
     .badge-aula {
-        font-size: 0.55rem;
-        padding: 2px 5px;
-    }
-    
-    .back-button {
-        padding: 6px 16px;
-        font-size: 0.75rem;
-    }
-    
-    .selections-title {
-        font-size: 1rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .app-container {
-        flex-direction: column;
-    }
-    
-    .nav-panel {
-        width: 100%;
-        min-width: auto;
-        max-height: 350px;
-    }
-    
-    .schedule-panel {
-        width: 100%;
-    }
-    
-    .breadcrumb-buttons {
-        gap: 8px;
+        font-size: 0.5rem;
+        padding: 1px 4px;
     }
     
     .selection-badge {
-        width: 100%;
-        justify-content: space-between;
+        font-size: 0.7rem;
+        padding: 4px 10px;
+    }
+    
+    .selections-title {
+        font-size: 0.85rem;
+    }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+    .schedule-panel {
+        padding: 10px;
     }
     
     .horario-table {
-        font-size: 0.6rem;
-        min-width: 600px;
+        min-width: 480px;
+        font-size: 0.55rem;
     }
     
-    .horario-table th, .horario-table td {
-        padding: 6px 2px;
+    .horario-table th,
+    .horario-table td {
+        padding: 5px 2px;
+    }
+    
+    .clase-cell {
+        font-size: 0.5rem;
+        padding: 3px;
+    }
+    
+    .breadcrumb-buttons {
+        gap: 6px;
+    }
+    
+    .back-button {
+        padding: 5px 10px;
+        font-size: 0.65rem;
+    }
+    
+    .legend-item {
+        font-size: 0.6rem;
+    }
+    
+    .legend-color {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* Pantallas muy anchas */
+@media (min-width: 1200px) {
+    .horario-table {
+        min-width: auto;
     }
 }

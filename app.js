@@ -1,4 +1,5 @@
 // app.js - Con selección múltiple y detección de conflictos
+// CORREGIDO: El menú SOLO se abre/cierra con el botón FAB o el botón cerrar
 
 let currentState = {
     facultad: null,
@@ -7,7 +8,6 @@ let currentState = {
     carreraData: null,
     nivel: null,
     materia: null
-    // Ya NO guardamos docente individual porque haremos selección múltiple
 };
 
 // Almacenamiento de selecciones: cada item = { id, carreraNombre, nivelId, nivelNombre, materiaNombre, docenteId, docenteNombre, horario, materiaId, materiaNombreLarga }
@@ -56,14 +56,14 @@ async function loadCarreraData(facultadId, carreraId) {
 const navContainer = document.getElementById('nav-container');
 const breadcrumbDiv = document.getElementById('breadcrumb-buttons');
 const scheduleTitle = document.getElementById('schedule-title');
-const scheduleSubtitle = document.getElementById('schedule-subtitle');
 const horarioWrapper = document.getElementById('horario-wrapper');
 const selectionsListDiv = document.getElementById('selections-list');
+const scheduleCountSpan = document.getElementById('schedule-count');
 
 const DIAS = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 const HORAS = ["06:45", "07:30", "08:15", "09:00", "09:45", "10:30", "11:15", "12:00", 
-               "12:45", "13:30", "14:15", "15:00", "15:45", "16:30", "17:15", "18:00", 
-               "18:45", "19:30", "20:15", "21:00"];
+               "12:45", "13:30", "14:00", "14:45", "15:30", "16:15", "17:00", "17:45", 
+               "18:30", "19:15", "20:00", "20:45", "21:30"];
 
 // Guardar selecciones en localStorage
 function saveSelections() {
@@ -86,6 +86,7 @@ function renderSelectionsList() {
     if (!selectionsListDiv) return;
     if (selectedItems.length === 0) {
         selectionsListDiv.innerHTML = 'Ninguna materia seleccionada aún.';
+        if (scheduleCountSpan) scheduleCountSpan.innerText = '0 materias';
         return;
     }
     selectionsListDiv.innerHTML = selectedItems.map((item, idx) => `
@@ -104,7 +105,7 @@ function renderSelectionsList() {
                 saveSelections();
                 renderSelectionsList();
                 renderHorario();
-                renderBreadcrumbButtons(); // refresca por si acaso
+                renderBreadcrumbButtons();
             }
             e.stopPropagation();
         });
@@ -119,10 +120,22 @@ function renderSelectionsList() {
             renderHorario();
         };
     }
+    
+    if (scheduleCountSpan) scheduleCountSpan.innerText = `${selectedItems.length} materia(s)`;
 }
 
 // Agregar selección (materia + docente)
 function addSelection(carreraData, nivelId, nivelNombre, materiaId, materiaObj, docente) {
+    // Verificar si ya existe la misma combinación materia+docente
+    const exists = selectedItems.some(item => 
+        item.materiaId === materiaId && item.docenteId === docente.id
+    );
+    
+    if (exists) {
+        alert('Esta materia con el mismo docente ya ha sido agregada');
+        return;
+    }
+    
     const newItem = {
         id: `${Date.now()}-${Math.random()}`,
         carreraNombre: carreraData.nombre,
@@ -144,14 +157,14 @@ function addSelection(carreraData, nivelId, nivelNombre, materiaId, materiaObj, 
 // Render horario con conflictos
 function renderHorario() {
     if (selectedItems.length === 0) {
-        horarioWrapper.innerHTML = `<div class="empty-message">No hay materias seleccionadas. Agrega desde el panel izquierdo.</div>`;
+        horarioWrapper.innerHTML = `<div class="empty-message">📭 No hay materias seleccionadas.<br>Agrega desde el menú de navegación 📚</div>`;
         scheduleTitle.innerText = `📅 Horario Combinado`;
-        scheduleSubtitle.innerText = `0 materias seleccionadas`;
+        if (scheduleCountSpan) scheduleCountSpan.innerText = '0 materias';
         return;
     }
     
-    scheduleTitle.innerText = `📅 Horario Combinado (${selectedItems.length} materia(s))`;
-    scheduleSubtitle.innerText = `Selecciona más desde la izquierda. Las celdas en rojo indican conflictos de horario.`;
+    scheduleTitle.innerText = `📅 Horario Combinado`;
+    if (scheduleCountSpan) scheduleCountSpan.innerText = `${selectedItems.length} materia(s)`;
     
     // Mapa de ocupación: key "día|horaInicio" -> array de items en conflicto
     let ocupacion = {};
@@ -178,7 +191,6 @@ function renderHorario() {
             if (clasesEnCelda.length === 0) {
                 tableHTML += `<td></td>`;
             } else {
-                // Determinamos si hay conflicto (más de 1 clase en misma celda)
                 const isConflict = clasesEnCelda.length > 1;
                 let contenidoHtml = '';
                 for (let idx = 0; idx < clasesEnCelda.length; idx++) {
@@ -187,9 +199,9 @@ function renderHorario() {
                     contenidoHtml += `<div class="clase-cell ${conflictClass}" style="margin-bottom: ${idx < clasesEnCelda.length-1 ? '6px' : '0'};">
                         📘 ${item.materiaNombre}<br>
                         👨‍🏫 ${item.docenteNombre}<br>
-                        <span class="badge-aula">🏫 ${clase.aula}</span>
+                        <span class="badge-aula">🏫 ${clase.aula || 'N/A'}</span>
                         <span class="badge-aula">⏰ ${clase.hora}</span>
-                        ${isConflict ? '<span class="conflict-warning">⚠️ CONFLICTO</span>' : ''}
+                        ${isConflict ? '<div class="conflict-warning">⚠️ CONFLICTO</div>' : ''}
                     </div>`;
                 }
                 tableHTML += `<td>${contenidoHtml}</td>`;
@@ -201,7 +213,7 @@ function renderHorario() {
     horarioWrapper.innerHTML = tableHTML;
 }
 
-// ---------- RENDER DE NAVEGACIÓN (SIN selección directa de docente, ahora se usa botón "Agregar" )
+// ---------- RENDER DE NAVEGACIÓN ----------
 async function render() {
     if (!currentState.facultad) {
         renderFacultades();
@@ -221,17 +233,20 @@ async function render() {
     } else if (!currentState.materia) {
         renderMaterias();
     } else {
-        renderDocentesConBoton();  // Nuevo: lista de docentes con botón "➕ Agregar"
+        renderDocentesConBoton();
     }
     renderBreadcrumbButtons();
+    
+    // ELIMINADO: Ya no se cierra el menú automáticamente al navegar
+    // El menú SOLO se cierra cuando el usuario presiona el botón de cerrar o el overlay
 }
 
 function renderFacultades() {
     navContainer.innerHTML = `
         <div class="nav-title">🏛️ FACULTADES</div>
-        <ul style="list-style:none;">
-            ${FACULTADES.map(f => `<li class="facultad-item" data-id="${f.id}" data-path="${f.path}">📁 ${f.nombre}</li>`).join('')}
-        </ul>
+        <div style="padding: 4px;">
+            ${FACULTADES.map(f => `<div class="facultad-item" data-id="${f.id}" data-path="${f.path}">📁 ${f.nombre}</div>`).join('')}
+        </div>
     `;
     document.querySelectorAll('.facultad-item').forEach(el => {
         el.addEventListener('click', () => {
@@ -245,10 +260,11 @@ function renderCarreras() {
     const carreras = CARRERAS_POR_FACULTAD[currentState.facultad] || [];
     const facultadInfo = FACULTADES.find(f => f.id === currentState.facultad);
     navContainer.innerHTML = `
-        <div class="nav-title">🎓 CARRERAS · ${facultadInfo?.nombre || currentState.facultad}</div>
-        <ul style="list-style:none;">
-            ${carreras.map(c => `<li class="carrera-item" data-id="${c.id}">📖 ${c.nombre}</li>`).join('')}
-        </ul>
+        <div class="nav-title">🎓 CARRERAS</div>
+        <div style="font-size:0.8rem; padding:0 4px 8px 4px; color:#666;">${facultadInfo?.nombre || currentState.facultad}</div>
+        <div style="padding: 4px;">
+            ${carreras.map(c => `<div class="carrera-item" data-id="${c.id}">📖 ${c.nombre}</div>`).join('')}
+        </div>
     `;
     document.querySelectorAll('.carrera-item').forEach(el => {
         el.addEventListener('click', async () => {
@@ -264,10 +280,11 @@ function renderCarreras() {
 function renderNiveles() {
     const niveles = currentState.carreraData.niveles;
     navContainer.innerHTML = `
-        <div class="nav-title">📌 NIVELES · ${currentState.carreraData.nombre}</div>
-        <ul style="list-style:none;">
-            ${niveles.map(n => `<li class="nav-item" data-id="${n.id}">📘 ${n.nombre}</li>`).join('')}
-        </ul>
+        <div class="nav-title">📌 NIVELES</div>
+        <div style="font-size:0.8rem; padding:0 4px 8px 4px; color:#666;">${currentState.carreraData.nombre}</div>
+        <div style="padding: 4px;">
+            ${niveles.map(n => `<div class="nav-item" data-id="${n.id}">📘 ${n.nombre}</div>`).join('')}
+        </div>
     `;
     document.querySelectorAll('.nav-item').forEach(el => {
         el.addEventListener('click', () => {
@@ -282,10 +299,11 @@ function renderMaterias() {
     const nivelData = currentState.carreraData.nivelesData[currentState.nivel];
     const materias = nivelData.materias;
     navContainer.innerHTML = `
-        <div class="nav-title">📚 MATERIAS · ${currentState.nivel.toUpperCase()}</div>
-        <ul style="list-style:none;">
-            ${materias.map(m => `<li class="nav-item" data-id="${m.id}">📗 ${m.nombre}</li>`).join('')}
-        </ul>
+        <div class="nav-title">📚 MATERIAS</div>
+        <div style="font-size:0.8rem; padding:0 4px 8px 4px; color:#666;">Nivel: ${currentState.nivel.toUpperCase()}</div>
+        <div style="padding: 4px;">
+            ${materias.map(m => `<div class="nav-item" data-id="${m.id}">📗 ${m.nombre}</div>`).join('')}
+        </div>
     `;
     document.querySelectorAll('.nav-item').forEach(el => {
         el.addEventListener('click', () => {
@@ -301,19 +319,20 @@ function renderDocentesConBoton() {
     const docentes = materiaData.docentes;
     
     navContainer.innerHTML = `
-        <div class="nav-title">👩‍🏫 DOCENTES · ${materiaData.nombre}</div>
-        <div style="padding: 8px; background:#eef2fa; border-radius:12px; margin-bottom:12px;">
-            ⚡ Haz clic en "➕ Agregar" para añadir este docente a tu horario combinado.
+        <div class="nav-title">👩‍🏫 DOCENTES</div>
+        <div style="font-size:0.8rem; padding:0 4px 8px 4px; color:#666;">${materiaData.nombre}</div>
+        <div style="padding: 8px; background:#eef2fa; border-radius:12px; margin-bottom:12px; font-size:0.75rem;">
+            ⚡ Haz clic en "➕ Agregar" para añadir este docente a tu horario.
         </div>
-        <ul style="list-style:none;">
+        <div style="padding: 4px;">
             ${docentes.map(d => `
-                <li style="background:#f8f9fa; margin-bottom:12px; border-radius:12px; padding:12px;">
+                <div style="background:#f8f9fa; margin-bottom:12px; border-radius:12px; padding:12px;">
                     <div><strong>👨‍🏫 ${d.nombre}</strong> ${d.tipo ? `(${d.tipo})` : ''}</div>
-                    <div style="font-size:0.75rem; margin-top:6px;">Horario: ${d.horario ? Object.keys(d.horario).join(', ') : 'No definido'}</div>
-                    <button class="add-teacher-btn" data-docente-id="${d.id}" style="margin-top:8px; background:#28a745; color:white; border:none; padding:6px 12px; border-radius:20px; cursor:pointer;">➕ Agregar esta materia</button>
-                </li>
+                    <div style="font-size:0.7rem; margin-top:6px; color:#555;">Horario: ${d.horario ? Object.keys(d.horario).join(', ') : 'No definido'}</div>
+                    <button class="add-teacher-btn" data-docente-id="${d.id}" style="margin-top:8px;">➕ Agregar esta materia</button>
+                </div>
             `).join('')}
-        </ul>
+        </div>
     `;
     
     document.querySelectorAll('.add-teacher-btn').forEach(btn => {
@@ -331,10 +350,10 @@ function renderDocentesConBoton() {
                     materiaDataInner,
                     docente
                 );
-                // Opcional: feedback visual
                 btn.textContent = '✓ Agregado';
                 setTimeout(() => { btn.textContent = '➕ Agregar esta materia'; }, 1000);
             }
+            e.stopPropagation();
         });
     });
 }
@@ -365,6 +384,53 @@ function renderBreadcrumbButtons() {
     });
 }
 
-// Inicializar y cargar selecciones previas
+// ========== FUNCIONES PARA MENÚ MÓVIL ==========
+// El menú SOLO se abre/cierra con estos botones
+function openMobileMenu() {
+    const navPanel = document.getElementById('navPanel');
+    const menuOverlay = document.getElementById('menuOverlay');
+    if (navPanel) navPanel.classList.add('open');
+    if (menuOverlay) menuOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMobileMenu() {
+    const navPanel = document.getElementById('navPanel');
+    const menuOverlay = document.getElementById('menuOverlay');
+    if (navPanel) navPanel.classList.remove('open');
+    if (menuOverlay) menuOverlay.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+// Función para abrir el menú al inicio en móvil
+function openMenuOnStartIfMobile() {
+    if (window.innerWidth <= 768) {
+        openMobileMenu();
+    }
+}
+
+// Inicializar controles del menú móvil
+function initMobileMenu() {
+    const menuFab = document.getElementById('menuFabBtn');
+    const closeNavBtn = document.getElementById('closeNavBtn');
+    const menuOverlay = document.getElementById('menuOverlay');
+    
+    if (menuFab) menuFab.addEventListener('click', openMobileMenu);
+    if (closeNavBtn) closeNavBtn.addEventListener('click', closeMobileMenu);
+    if (menuOverlay) menuOverlay.addEventListener('click', closeMobileMenu);
+    
+    // Al cambiar de tamaño, si se vuelve a desktop, aseguramos que el menú esté cerrado
+    // pero NO lo abrimos automáticamente
+    window.addEventListener('resize', () => {
+        if (window.innerWidth > 768) {
+            closeMobileMenu();
+        }
+    });
+}
+
+// Inicializar
 loadSelectionsFromStorage();
 render();
+initMobileMenu();
+// Abrir el menú automáticamente al inicio SOLO en móvil
+openMenuOnStartIfMobile();

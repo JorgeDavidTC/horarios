@@ -2,27 +2,64 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
     <title>Gestión de Horarios Universitarios</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<!-- Botón flotante FAB para abrir/cerrar el panel de navegación en móvil -->
+<button class="menu-fab" id="menuFabBtn" aria-label="Abrir menú de navegación">
+    <span class="menu-icon">☰</span>
+</button>
+
+<!-- Overlay para cerrar el menú al tocar fuera -->
+<div class="menu-overlay" id="menuOverlay"></div>
+
 <div class="app-container">
-    <div class="nav-panel">
+    <!-- Panel izquierdo de navegación - ahora oculto en móvil por defecto -->
+    <div class="nav-panel" id="navPanel">
+        <div class="nav-header">
+            <h2 class="nav-title">📚 Navegación</h2>
+            <button class="close-nav-btn" id="closeNavBtn" aria-label="Cerrar menú">✕</button>
+        </div>
         <div id="nav-container">Cargando...</div>
     </div>
+
     <div class="schedule-panel">
+        <!-- Migas de pan / botones de navegación -->
         <div class="breadcrumb-buttons" id="breadcrumb-buttons"></div>
+        
+        <!-- Área de selecciones -->
         <div class="selections-area" id="selections-area">
             <div class="selections-title">
-                📌 Materias/Docentes Seleccionados
-                <button class="clear-all-btn" id="clear-all-selections">🗑️ Limpiar todo</button>
+                📌 Seleccionados
+                <button class="clear-all-btn" id="clear-all-selections">🗑️ Limpiar</button>
             </div>
             <div id="selections-list" class="selections-list">Ninguna materia seleccionada aún.</div>
         </div>
-        <h3 id="schedule-title">📅 Horario Combinado</h3>
-        <p id="schedule-subtitle" style="color: #555;">Visualiza todas tus materias seleccionadas</p>
-        <div id="horario-wrapper" class="horario-wrapper"></div>
+        
+        <!-- Título del horario -->
+        <div class="schedule-header">
+            <h3 id="schedule-title">📅 Horario Combinado</h3>
+            <span id="schedule-count" class="schedule-count">0 materias</span>
+        </div>
+        
+        <!-- Contenedor del horario con scroll horizontal mejorado -->
+        <div class="horario-container">
+            <div id="horario-wrapper" class="horario-wrapper"></div>
+        </div>
+        
+        <!-- Leyenda de colores -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color legend-normal"></div>
+                <span>Clase asignada</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color legend-conflict"></div>
+                <span>Conflicto de horario</span>
+            </div>
+        </div>
     </div>
 </div>
 
