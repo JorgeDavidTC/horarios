@@ -16,15 +16,15 @@ let selectedItems = [];
 // Datos mock de facultades
 const FACULTADES = [
     { id: "tecnologia", nombre: "Facultad de Tecnología", path: "tecnologia" },
-    { id: "ciencias_puras", nombre: "Facultad de Ciencias Puras", path: "ciencias_puras" },
+    //{ id: "ciencias_puras", nombre: "Facultad de Ciencias Puras", path: "ciencias_puras" },
 ];
 
 const CARRERAS_POR_FACULTAD = {
     "tecnologia": [
         { id: "sistemas", nombre: "Licenciatura en Sistemas" },
-        { id: "alimentos", nombre: "Licenciatura en Alimentos" },
-        { id: "biologia", nombre: "Licenciatura en Biología" },
-        { id: "civil", nombre: "Licenciatura en Civil" }
+      //  { id: "alimentos", nombre: "Licenciatura en Alimentos" },
+       // { id: "biologia", nombre: "Licenciatura en Biología" },
+       // { id: "civil", nombre: "Licenciatura en Civil" }
     ],
     "ciencias_puras": [
         { id: "matematica", nombre: "Licenciatura en Matemática (LIC)" },
@@ -322,7 +322,6 @@ function renderDocentesConBoton() {
         <div class="nav-title">👩‍🏫 DOCENTES</div>
         <div style="font-size:0.8rem; padding:0 4px 8px 4px; color:#666;">${materiaData.nombre}</div>
         <div style="padding: 8px; background:#eef2fa; border-radius:12px; margin-bottom:12px; font-size:0.75rem;">
-            ⚡ Haz clic en "➕ Agregar" para añadir este docente a tu horario.
         </div>
         <div style="padding: 4px;">
             ${docentes.map(d => `
