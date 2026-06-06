@@ -12,6 +12,107 @@ body {
     position: relative;
 }
 
+/* ========== LOGO DE LIBROS APILADOS ========== */
+.app-logo {
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 8px 20px 8px 16px;
+    border-radius: 60px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(0, 105, 92, 0.15);
+    backdrop-filter: blur(8px);
+}
+
+.app-logo:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0, 105, 92, 0.2);
+    background: white;
+}
+
+/* Contenedor de los libros apilados */
+.logo-books {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.book {
+    position: absolute;
+    font-size: 28px;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.book-1 {
+    transform: rotate(-15deg) translateX(-8px) translateY(-4px);
+    z-index: 1;
+}
+
+.book-2 {
+    transform: rotate(0deg) translateY(0px);
+    z-index: 2;
+    font-size: 30px;
+}
+
+.book-3 {
+    transform: rotate(15deg) translateX(8px) translateY(-4px);
+    z-index: 1;
+}
+
+.app-logo:hover .book-1 {
+    transform: rotate(-20deg) translateX(-10px) translateY(-6px);
+}
+
+.app-logo:hover .book-2 {
+    transform: rotate(0deg) translateY(-2px);
+    font-size: 32px;
+}
+
+.app-logo:hover .book-3 {
+    transform: rotate(20deg) translateX(10px) translateY(-6px);
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+.logo-title {
+    font-size: 1.1rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #00695c 0%, #00897b 50%, #26a69a 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: -0.5px;
+}
+
+.logo-accent {
+    background: linear-gradient(135deg, #ef5350, #e53935);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.logo-subtitle {
+    font-size: 0.6rem;
+    color: #78909c;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
 /* Botón flotante FAB para menú móvil */
 .menu-fab {
     position: fixed;
@@ -95,6 +196,17 @@ body {
     align-items: center;
     background: linear-gradient(135deg, #00695c 0%, #00897b 100%);
     padding: 16px 20px;
+}
+
+.nav-header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-logo-icon {
+    font-size: 24px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
 }
 
 .nav-title {
@@ -278,9 +390,21 @@ body {
     margin-bottom: 12px;
 }
 
+.schedule-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.schedule-icon {
+    font-size: 24px;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
 #schedule-title {
     font-size: 1.1rem;
     color: #1a3a5f;
+    margin: 0;
 }
 
 .schedule-count {
@@ -428,6 +552,10 @@ body {
     border: 2px solid #ef5350;
 }
 
+.legend-icon {
+    font-size: 16px;
+}
+
 /* Scrollbar personalizado */
 ::-webkit-scrollbar {
     width: 6px;
@@ -480,6 +608,33 @@ body {
         padding: 8px;
     }
     
+    .app-logo {
+        top: 12px;
+        left: 12px;
+        padding: 6px 14px 6px 10px;
+    }
+    
+    .logo-books {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .book {
+        font-size: 22px;
+    }
+    
+    .book-2 {
+        font-size: 24px;
+    }
+    
+    .logo-title {
+        font-size: 0.9rem;
+    }
+    
+    .logo-subtitle {
+        font-size: 0.5rem;
+    }
+    
     .menu-fab {
         display: flex;
     }
@@ -512,6 +667,7 @@ body {
     .schedule-panel {
         width: 100%;
         padding: 12px;
+        margin-top: 60px;
     }
     
     .horario-container {
@@ -592,5 +748,12 @@ body {
 @media (min-width: 1200px) {
     .horario-table {
         min-width: auto;
+    }
+}
+
+/* Desktop - ajuste del logo */
+@media (min-width: 769px) {
+    .schedule-panel {
+        margin-left: 0;
     }
 }
